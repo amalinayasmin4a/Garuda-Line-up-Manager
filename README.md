@@ -1,4 +1,4 @@
-# Garuda-Line-up-Manager
+# Garuda-Line-up-Manager/n
 a simple, interactive terminal app to manage players: add, view, update, delete, and assign players to lineup (starting 11) or bench. 
 **What the project does**
 This is a pragmatic CLI CRUD app for managing a football squad. 
