@@ -8,11 +8,12 @@ lineup = []   # starting 11
 bench = []    # substitutes
 
 
-def show_players(list_data):#--> display function to take a list of player dictionaries and shows them in a table
+def show_players(list_data):
+    # display function to take a list of player dictionaries and shows them in a table
     
-    if not list_data: #checks if the list is empty
+    if len(list_data) == 0:  # if the list is empty
         print("No players in this list.")
-    else:
+    else:  # else (if the list has players)
         headers = ["ID", "Jersey", "Name", "Position", "Club", "Age",
                    "Injury", "Minutes", "Notes"]
         table = [
@@ -21,6 +22,7 @@ def show_players(list_data):#--> display function to take a list of player dicti
             for p in list_data
         ]
         print(tabulate(table, headers=headers, tablefmt="grid"))
+
 #helper 
 def find_player(pid):#--> used to search for a player in  squad list by their Player ID
     for p in squad:
