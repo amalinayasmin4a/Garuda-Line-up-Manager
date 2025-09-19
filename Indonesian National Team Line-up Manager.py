@@ -10,7 +10,6 @@ bench = []    # substitutes
 
 def show_players(list_data):
     # display function to take a list of player dictionaries and shows them in a table
-    
     if len(list_data) == 0:  # if the list is empty
         print("No players in this list.")
     else:  # else (if the list has players)
@@ -23,15 +22,16 @@ def show_players(list_data):
         ]
         print(tabulate(table, headers=headers, tablefmt="grid"))
 
-#helper 
-def find_player(pid):#--> used to search for a player in  squad list by their Player ID
-    for p in squad:
+
+# helper
+def find_player(pid):  # search by player ID
+    for p in squad + lineup + bench:  # search across all lists
         if p["id"] == pid:
             return p
     return None
 
 
-def get_int_input(prompt): #--> to ensure that certain inputs are exclusively for integer only
+def get_int_input(prompt):  # ensure integer input only
     while True:
         val = input(prompt)
         if val.isdigit():
@@ -39,12 +39,13 @@ def get_int_input(prompt): #--> to ensure that certain inputs are exclusively fo
         print("Please enter a number.")
 
 
-def add_player(): #--> to add player 
+def add_player():  # add player
     pid = input("Enter Player ID: ")
     if find_player(pid):
         print("Player ID already exists.")
         return
-#input data area 
+
+    # input data
     jersey = get_int_input("Enter Jersey Number: ")
     name = input("Enter Name: ")
     position = input("Enter Position (GK/DF/MF/FW): ")
@@ -74,7 +75,7 @@ def add_player(): #--> to add player
     print("\nAssign this player to: 1) Line-Up  2) Bench  3) Stay only in Squad")
     choice = input("Choose: ")
     if choice == "1":
-        if len(lineup) >= 11: #--> criteria for a line up is 11 players max
+        if len(lineup) >= 11:  # max 11 in line-up
             print("Line-Up is full (11 players). Adding to Bench instead.")
             bench.append(player)
         else:
@@ -85,24 +86,44 @@ def add_player(): #--> to add player
         print(f"Player {name} added to Bench.")
     else:
         print(f"Player {name} stays in Squad only for now.")
+#Sort Player Sub Menu
+def sort_players(list_data):
+    if len(list_data) == 0:
+        return list_data
 
-#to view all the appended players
+    print("\nSort by: 1) Position  2) Minutes Played  3) No Sorting")
+    choice = input("Choose: ")
+
+    def get_position(player):
+        return player['position']
+
+    def get_minutes(player):
+        return player['minutes']
+
+    if choice == "1":
+        list_data.sort(key=get_position)
+    elif choice == "2":
+        list_data.sort(key=get_minutes, reverse=True)
+    
+
+    return list_data
+
 def view_players():
     print("\n--- Squad (All Players) ---")
-    show_players(squad)
+    show_players(sort_players(squad))
     print("\n--- Line-Up (Starting 11) ---")
-    show_players(lineup)
+    show_players(sort_players(lineup))
     print("\n--- Bench (Substitutes) ---")
-    show_players(bench)
+    show_players(sort_players(bench))
 
-#to view the current players resided at the line up list
+
 def view_lineup():
     print("\n===== Current Starting Line-Up =====")
     if len(lineup) == 0:
         print("No players in Line-Up yet.")
     else:
-        print(f"Total Players: {len(lineup)}/11")
-        show_players(lineup)
+        print(f"Total Players: {len(lineup)}/11") #to ensure that the total players only contain of 11 people for the final line up
+        show_players(sort_players(lineup))
 
 
 def update_player():
@@ -129,7 +150,7 @@ def update_player():
 
     print(f"Player {pid} info updated.")
 
-    # --- Move player to a different list ---
+    # --- Move player ---
     print("\nDo you want to move this player?")
     print("1) Stay where they are")
     print("2) Move to Line-Up")
@@ -138,7 +159,7 @@ def update_player():
 
     move_choice = input("Choose: ")
 
-    # First, remove them from wherever they are
+    # Remove from current list
     if player in lineup:
         lineup.remove(player)
     if player in bench:
@@ -147,11 +168,10 @@ def update_player():
         squad.remove(player)
 
     if move_choice == "1":
-        # Figure out where they originally were and put them back
-        squad.append(player)  # default if "stay" is chosen
+        squad.append(player)  # default "stay"
     elif move_choice == "2":
         if len(lineup) >= 11:
-            print("Line-Up is full (11 players). Adding back to Squad.")
+            print("Line-Up is full (11 players). Adding to Squad.")
             squad.append(player)
         else:
             lineup.append(player)
@@ -163,11 +183,9 @@ def update_player():
         squad.append(player)
         print(f"Player {player['name']} moved to Squad.")
     else:
-        # default fallback
         squad.append(player)
 
     print("Player update complete.")
-
 
 
 def delete_player():
@@ -177,7 +195,6 @@ def delete_player():
         print("Player not found.")
         return
 
-    # remove from all lists
     if player in squad:
         squad.remove(player)
     if player in lineup:
@@ -188,7 +205,6 @@ def delete_player():
 
 
 def menu():
-    # Welcome message at start
     print("============================================")
     print("  Welcome Officials of Timnas Indonesia! 🇮🇩")
     print("============================================")
@@ -218,5 +234,6 @@ def menu():
             break
         else:
             print("Invalid choice.")
+
 
 menu()
